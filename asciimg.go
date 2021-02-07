@@ -3,15 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"golang.org/x/image/draw"
 	"image"
 	"image/color"
 	_ "image/jpeg"
-	// Side-effect import.
-	// Сайд-эффект — добавление декодера PNG в пакет image.
 	_ "image/png"
 	"os"
-	// Внешняя зависимость.
-	"golang.org/x/image/draw"
 )
 
 func scale(img image.Image, w int, h int) image.Image {
@@ -35,9 +32,10 @@ func processPixel(c color.Color) rune {
 	gc := color.GrayModel.Convert(c)
 	r, _, _, _ := gc.RGBA()
 	r = r >> 8
-
-	// symbols := []rune("@80GCLft1i;:,. ")
-	return '0'
+	fmt.Println(r)
+	symbols := []rune("@80GCLft1i;:,. ")
+	index := int(r) * len(symbols) / 256
+	return symbols[index]
 }
 
 func convertToAscii(img image.Image) [][]rune {
