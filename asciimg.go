@@ -32,7 +32,7 @@ func processPixel(c color.Color) rune {
 	gc := color.GrayModel.Convert(c)
 	r, _, _, _ := gc.RGBA()
 	r = r >> 8
-	fmt.Println(r)
+	//fmt.Println(r)
 	symbols := []rune("@80GCLft1i;:,. ")
 	index := int(r) * len(symbols) / 256
 	return symbols[index]
@@ -52,6 +52,10 @@ func convertToAscii(img image.Image) [][]rune {
 	return textImg
 }
 
+var (
+	output = flag.String("o", "", "-o <out.txt>")
+)
+
 func main() {
 	flag.Parse()
 
@@ -68,10 +72,23 @@ func main() {
 	}
 
 	textImg := convertToAscii(img)
-	for i := range textImg {
-		for j := range textImg[i] {
-			fmt.Printf("%c", textImg[i][j])
+
+	if *output == "" {
+		for i := range textImg {
+			for j := range textImg[i] {
+				fmt.Printf("%c", textImg[i][j])
+			}
+			fmt.Println()
 		}
-		fmt.Println()
+	} else {
+		file, _ := os.Create(*output)
+		defer file.Close()
+		for i := range textImg {
+			for j := range textImg[i] {
+				fmt.Fprintf(file, "%c", textImg[i][j])
+			}
+			fmt.Fprintf(file, "\n")
+		}
 	}
+
 }
