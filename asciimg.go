@@ -53,7 +53,10 @@ func convertToAscii(img image.Image) [][]rune {
 }
 
 var (
-	output = flag.String("o", "", "-o <out.txt>")
+	output  = flag.String("o", "", "-o <out.txt>")
+	weigth  = flag.Int("w", 200, "")
+	heigth  = flag.Int("h", 40, "")
+	noscale = flag.Bool("noscale", false, "")
 )
 
 func main() {
@@ -69,6 +72,10 @@ func main() {
 	if err != nil {
 		fmt.Println("Error:", err.Error())
 		os.Exit(1)
+	}
+
+	if !*noscale && *output == "" {
+		img = scale(img, *weigth, *heigth)
 	}
 
 	textImg := convertToAscii(img)
